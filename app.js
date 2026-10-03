@@ -52,7 +52,7 @@ app.post("/listings", async (req, res) => {
   res.redirect("/listings");
 });
 
-app.get("/listing/:id/edit", async (req, res) => {
+app.get("/listings/:id/edit", async (req, res) => {
   let {id} = req.params;
   const listing = await Listing.findById(id);
   res.render("listings/edit.ejs", { listing });
