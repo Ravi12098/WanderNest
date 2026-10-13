@@ -114,6 +114,18 @@ app.post("/listings/:id/reviews", validateReview, wrapAsync( async (req, res) =>
   res.redirect(`/listings/${listing._id}`);
 }));
 
+app.delete(
+  "/listings/:id/reviews/:reviewId",
+  wrapAsync(async (req, res) => {
+    let { id, reviwId } = req.params;
+
+    await Listing.findByIdAndUpdate(id, {$pull: { reviews: reviwId }})
+    await Review.findByIdAndDelete(reviwId);
+
+    res.redirect(`/listings/${id}`);
+  })
+);
+
 // app.get("/testListing", async (req, res) => {
 //     let sampleListing = new Listing({
 //       title: "My New Villa",
