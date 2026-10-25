@@ -16,8 +16,13 @@ router.post(
         const newUser = new UserActivation({email, username});
         const registeredUser = await UserActivation.register(newUser, password);
         console.log(registeredUser);
-        req.flash("success", "welcome to WanderNest");
-        res.redirect("/listings");
+        res.login(registeredUser, (err) => {
+            if(err) {
+                return next(err);
+            }
+            req.flash("success", "welcome to WanderNest");
+            res.redirect("/listings");
+        });
     } catch (e) {
         req.flash("error", e.message);
         res.redirect("/signup");
