@@ -11,13 +11,13 @@ router.get("/signup", (req, res) => {
 
 router.post(
     "/signup",
-     wrapAsync(async (req, res) => {
+     wrapAsync(async (req, res, next) => {
     try {
         let {username, email, password} = req.body;
-        const newUser = new UserActivation({email, username});
-        const registeredUser = await UserActivation.register(newUser, password);
+        const newUser = new User({email, username});
+        const registeredUser = await User.register(newUser, password);
         console.log(registeredUser);
-        res.login(registeredUser, (err) => {
+        req.login(registeredUser, (err) => {
             if(err) {
                 return next(err);
             }
@@ -25,6 +25,7 @@ router.post(
             res.redirect("/listings");
         });
     } catch (e) {
+        console.log("Catch block error:", e)
         req.flash("error", e.message);
         res.redirect("/signup");
     }
@@ -43,7 +44,7 @@ router.post(
         failureFlash: true,
     }),
     async (req, res) => {
-        res.flash("success", "Welcome back to WanderNest!");
+        req.flash("success", "Welcome back to WanderNest!");
         let redirectUrl = res.locals.redirectUrl || "/listings";
         res.redirect(redirectUrl);
     }
