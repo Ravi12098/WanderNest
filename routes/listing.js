@@ -5,6 +5,7 @@ const ExpressError = require("../utils/ExpressError.js");
 const { listingSchema } = require("../schema.js");
 const Listing = require("../models/listing.js");
 const {isLoggedIn} = require("../middleware.js");
+const User = require("../models/user.js");
 
 const validateListing = (req, res, next) => {
   let { error } = listingSchema.validate(req.body);
@@ -28,7 +29,9 @@ router.get("/new", isLoggedIn,(req, res) => {
 
 router.get("/:id", wrapAsync(async (req, res) => {
   let {id} = req.params;
-  const listing = await Listing.findById(id).populate("reviews");
+  const listing = await Listing.findById(id)
+  .populate("reviews")
+  .populate("owner");
   if (!listing) {
     req.flash("error", "Listing you requested for does not exist!");
     res.redirect("/listings");
@@ -42,6 +45,7 @@ router.post(
   validateListing,
   wrapAsync(async (req, res, next) => {
     const newListing = new Listing(req.body.listing);
+    newListing.owner = req.user._id;
     await newListing.save();
     req.flash("success", "New Listing Created!");
     res.redirect("/listings");

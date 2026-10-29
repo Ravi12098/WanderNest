@@ -9,13 +9,21 @@ const listingSchema = new Schema({
     },
     description: String,
     image: {
-      type: String,
-      default: 
-        "https://tse2.mm.bing.net/th/id/OIP.P-gYsqgJDg7RvTaaG1sIWwHaJ4?r=0&pid=Api&P=0&h=180",
-      set: (v) => 
-        v === ""
-          ? "https://tse2.mm.bing.net/th/id/OIP.P-gYsqgJDg7RvTaaG1sIWwHaJ4?r=0&pid=Api&P=0&h=180" 
-          : v,
+      filename: {
+        type: String,
+        default: "listingimage",
+      },
+      url: {
+        type: String,
+        default: "https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60",
+      },
+      // type: String,
+      // default: 
+      //   "https://tse2.mm.bing.net/th/id/OIP.P-gYsqgJDg7RvTaaG1sIWwHaJ4?r=0&pid=Api&P=0&h=180",
+      // set: (v) => 
+      //   v === ""
+      //     ? "https://tse2.mm.bing.net/th/id/OIP.P-gYsqgJDg7RvTaaG1sIWwHaJ4?r=0&pid=Api&P=0&h=180" 
+      //     : v,
     },
     price: Number,
     location: String,
@@ -26,6 +34,10 @@ const listingSchema = new Schema({
         ref: "Review",
       },
     ],
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
 });
 
 listingSchema.post("findOneAndDelete", async (listing) => {
